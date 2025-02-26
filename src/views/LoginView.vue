@@ -8,14 +8,21 @@
       </div>
       <form @submit.prevent="handleSubmit">
         <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
-        <input type="text" v-model="form.username" placeholder="Identifiant" required />
-        <input v-if="!isLogin" type="email" v-model="form.email" placeholder="Email" required />
+        <input v-if="!isLogin" type="text" v-model="form.lastName" placeholder="Nom" required />
+        <input v-if="!isLogin" type="text" v-model="form.firstName" placeholder="Prénom" required />
+        <select v-if="!isLogin" v-model="form.company">
+          <option value="">Sélectionnez une entreprise (optionnel)</option>
+          <option value="Entreprise A">Apple</option>
+          <option value="Entreprise B">CMB ARKEA</option>
+          <option value="Entreprise C">Samsung</option>
+        </select>
+        <input type="email" v-model="form.email" placeholder="Email" required />
         <input type="password" v-model="form.password" placeholder="Mot de passe" required />
         <input v-if="!isLogin" type="password" v-model="form.confirmPassword" placeholder="Confirmer le mot de passe" required />
         <button type="submit">{{ isLogin ? "Connexion" : "Inscription" }}</button>
       </form>
       <!--TODO : enlever mdp oublié si pas fait -->
-      <a v-if="isLogin" href="#">Mot de passe oublié ?</a>
+      <!-- <a v-if="isLogin" href="#">Mot de passe oublié ?</a> -->
     </div>
   </div>
 </template>
@@ -24,51 +31,81 @@
 import axios from "axios";
 
 export default {
-  data() {
+   data() {
     return {
       isLogin: true,
       form: {
-        username: "",
+        lastName: "",
+        firstName: "",
+        company: "",
         email: "",
         password: "",
         confirmPassword: "",
       },
-      errorMessage : null,
+      errorMessage: null,
     };
   },
   methods: {
+    validatePasswords() {
+      if (!this.isLogin && this.form.password !== this.form.confirmPassword) {
+        console.log("mdp pas pareil")
+        this.errorMessage = "Les mots de passe ne correspondent pas.";
+        return false;
+      }
+      if (this.form.password.length < 8) {
+        this.errorMessage = "Le mot de passe doit contenir au minimum 8 caractères.";
+        return false;
+      }
+      return true;
+    },
     async handleSubmit() {
+       if (!this.validatePasswords()) {
+        return;
+      }
       try {
-        const endpoint = this.isLogin ? "/api/login" : "/api/register";
-        const payload = this.isLogin
-          ? { username: this.form.username, password: this.form.password }
-          : this.form;
+        if (this.isLogin) {
+          // Connexion (PUT /api/auth/login)
+          const response = await axios.put("http://localhost:8082/api/auth/login", {
+            email: this.form.email,
+            password: this.form.password,
+          });
 
-        const response = await axios.post(endpoint, payload);
-        console.log("Réponse du serveur :", response.data);
 
-        // Redirect only after successful login
-        if (this.isLogin && response.status === 200) {  //check for successful response
-          this.$emit('login-success', response.data.username); // Emit un événement pour notifier App.vue
-          this.$router.push("/home");// Redirige vers la page produits
-        } else if (!this.isLogin && response.status === 201) { // Example for successful registration
-          this.isLogin = true; // Switch to login after successful registration
-          // Optionally, display a success message
-        }
+          // Stocker le JWT dans localStorage
+          localStorage.setItem("token", response.data.token);
+          console.log("Token stocké:", localStorage.getItem("token"));
 
-      } catch (error) {
-        console.error("Erreur :", error);
-        // Handle errors more gracefully, e.g., display an error message to the user
-        if (error.response) {
-          console.error("Server Error Details:", error.response.data); // Log server error details
-          // Display a user-friendly error message based on the error.response.data
-        } else if (error.request) {
-          console.error("Request Error:", error.request);
-          // Display a message indicating no response was received
+
+          // Obtenir les informations de l'utilisateur
+          // const userInfoResponse = await axios.get("http://localhost:8082/api/user", {
+          //   headers: {
+          //     Authorization: `Bearer ${response.data.token}`,
+          //   },
+          // });
+
+          // Émettre l'événement avec le prénom de l'utilisateur
+          // this.$emit("login-success", userInfoResponse.data.firstName);
+          // console.log(userInfoResponse.data.firstName);
+          this.$emit("login-success", this.form.firstName); 
+          console.log("emit",response)
+
+          // Rediriger vers page accueil
+          this.$router.push("/profil"); //changer pour home
         } else {
-          console.error("General Error:", error.message);
-          // Display a general error message
+          await axios.post("http://localhost:8082/api/auth/register", {
+            lastName: this.form.lastName,
+            firstName: this.form.firstName,
+            company: this.form.company,
+            email: this.form.email,
+            password: this.form.password,
+          });
+
+          // Rediriger vers /home
+          this.$emit("login-success", this.form.firstName); 
+          this.$router.push("/profil"); //changer pour home
         }
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";
       }
     },
   },
@@ -92,13 +129,13 @@ export default {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  width: 400px; /* Adjust as needed */
+  width: 400px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .logo {
-  width: 150px; /* Adjust size as needed */
+  width: 150px;
   height: auto;
   margin-bottom: 10px;
 }
@@ -115,7 +152,7 @@ export default {
   cursor: pointer;
   border: none;
   background: lightgray;
-  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  transition: background-color 0.3s ease;
 }
 
 .tabs .active {
@@ -124,25 +161,25 @@ export default {
 }
 
 .tabs button:hover {
-  background-color: #2980b9; /* Darker shade on hover */
+  background-color: #2980b9; 
 }
 
 
-form input {
+form input, form select {
   display: block;
   width: 100%;
   padding: 10px;
   margin: 5px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
-  box-sizing: border-box; /* Include padding in width */
-  transition: border-color 0.3s ease; /* Smooth border transition */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease; 
 }
 
-form input:focus {
-  border-color: #3498db; /* Highlight border on focus */
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 5px rgba(#3498db, 0.2); /* Add a subtle shadow */
+form input:focus, form select:focus {
+  border-color: #3498db;
+  outline: none; 
+  box-shadow: 0 0 5px rgba(#3498db, 0.2);
 }
 
 

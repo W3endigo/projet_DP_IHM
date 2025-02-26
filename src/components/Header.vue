@@ -3,9 +3,10 @@
     <div class="logo">
       <img src="@/assets/logo.png" alt="Logo">
     </div>
-    <div class="user-info">
-      <span>Bonjour {{ username }}</span>
-    </div>
+    <!-- probleme de récup du firstName -->
+    <!-- <div class="user-info">
+      <span>Bonjour {{ firstName }}</span>
+    </div> -->
     <div class="icons">
       <div class="notifications">
         <button>
@@ -29,7 +30,7 @@
 <script>
 export default {
   props: {
-    username: {
+    firstName: {
       type: String,
       required: true,
     },
