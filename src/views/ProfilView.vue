@@ -4,23 +4,23 @@
     <div v-if="user">
       <div class="profile-field">
         <label>Nom:</label>
-        <span>{{ user.lastName }}</span>
+        <input type="text" :value="user.lastName" readonly />
       </div>
       <div class="profile-field">
         <label>Prénom:</label>
-        <span>{{ user.firstName }}</span>
+        <input type="text" :value="user.firstName" readonly />
       </div>
       <!-- <div class="profile-field">
         <label>Email:</label>
-        <span class="non-modifiable">{{ user.email }}</span>
+        <input type="text" :value="user.email" readonly class="non-modifiable" />
       </div> -->
-      <div class="profile-field" v-if="user.company">
+      <div class="profile-field">
         <label>Entreprise:</label>
-        <span>{{ user.company }}</span>
+        <input type="text" :value="user.company || 'pas encore indiqué'" readonly />
       </div>
-      <div class="profile-field" v-if="user.password">
+      <div class="profile-field">
         <label>Mot de passe:</label>
-        <span>{{ user.password }}</span>
+        <input type="text" :value="user.password || 'pas encore indiqué'" readonly />
       </div>
     </div>
     <div v-else>
@@ -40,37 +40,33 @@ export default {
   setup() {
     const user = ref(null);
     const error = ref(null);
-    const token = localStorage.getItem('token'); // Assurez-vous que le token est bien stocké après connexion
+    const token = ref(localStorage.getItem('token') || "");
 
-    console.log("coucou")
     const getUser = async () => {
+      if (!token.value) {
+        error.value = "Utilisateur non authentifié";
+        console.error("Aucun token trouvé !");
+        return;
+      }
+
       try {
-        console.log("avant get : ", token);
         const response = await axios.get(API_URL, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token.value}`,
+          },
         });
-        console.log("apres get : ", token);
+
         user.value = response.data;
-        console.log("get user value : ", user.value);
       } catch (err) {
         error.value = err.response ? err.response.data : err.message;
-        console.log("erreur user value : ", user.value);
+        console.error("Erreur lors de la récupération du profil :", error.value);
       }
     };
-    console.log("au revoir : ", token);
 
-    onMounted(() => {
-      if (token) {
-        getUser();
-      } else {
-        error.value = 'Utilisateur non authentifié';
-      }
-    });
+    onMounted(getUser);
 
     return { user, error };
-  }
+  },
 };
 </script>
 
@@ -85,12 +81,21 @@ export default {
 }
 
 .profile-field {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .profile-field label {
+  display: block;
   font-weight: bold;
-  margin-right: 10px;
+  margin-bottom: 5px;
+}
+
+.profile-field input {
+  width: 96%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
 }
 
 .non-modifiable {

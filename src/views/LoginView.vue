@@ -12,17 +12,14 @@
         <input v-if="!isLogin" type="text" v-model="form.firstName" placeholder="Prénom" required />
         <select v-if="!isLogin" v-model="form.company">
           <option value="">Sélectionnez une entreprise (optionnel)</option>
-          <option value="Entreprise A">Apple</option>
-          <option value="Entreprise B">CMB ARKEA</option>
-          <option value="Entreprise C">Samsung</option>
+          <option v-for="company in companies" :key="company.id" :value="company.name">{{ company.name }}</option>
         </select>
         <input type="email" v-model="form.email" placeholder="Email" required />
         <input type="password" v-model="form.password" placeholder="Mot de passe" required />
         <input v-if="!isLogin" type="password" v-model="form.confirmPassword" placeholder="Confirmer le mot de passe" required />
         <button type="submit">{{ isLogin ? "Connexion" : "Inscription" }}</button>
       </form>
-      <!--TODO : enlever mdp oublié si pas fait -->
-      <!-- <a v-if="isLogin" href="#">Mot de passe oublié ?</a> -->
+      
     </div>
   </div>
 </template>
@@ -43,6 +40,7 @@ export default {
         confirmPassword: "",
       },
       errorMessage: null,
+      companies: [],
     };
   },
   methods: {
@@ -73,25 +71,16 @@ export default {
 
           // Stocker le JWT dans localStorage
           localStorage.setItem("token", response.data.token);
-          console.log("Token stocké:", localStorage.getItem("token"));
-
-
-          // Obtenir les informations de l'utilisateur
-          // const userInfoResponse = await axios.get("http://localhost:8082/api/user", {
-          //   headers: {
-          //     Authorization: `Bearer ${response.data.token}`,
-          //   },
-          // });
+         
 
           // Émettre l'événement avec le prénom de l'utilisateur
-          // this.$emit("login-success", userInfoResponse.data.firstName);
-          // console.log(userInfoResponse.data.firstName);
           this.$emit("login-success", this.form.firstName); 
-          console.log("emit",response)
+          
 
           // Rediriger vers page accueil
           this.$router.push("/profil"); //changer pour home
         } else {
+          //trouver solution pour company null
           await axios.post("http://localhost:8082/api/auth/register", {
             lastName: this.form.lastName,
             firstName: this.form.firstName,
@@ -107,7 +96,17 @@ export default {
       } catch (error) {
         this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";
       }
+    },async fetchCompanies() {
+      try {
+        const response = await axios.get("http://localhost:8082/api/companies");
+        this.companies = response.data;
+      } catch (error) {
+        console.error("Erreur lors de la récupération des compagnies :", error);
+      }
     },
+  },
+  mounted() {
+    this.fetchCompanies();
   },
 };
 </script>

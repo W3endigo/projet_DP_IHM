@@ -24,15 +24,29 @@
         </button>
       </div>
     </div>
+    <div class="deconnexion">
+      <button v-if="isLoggedIn" @click="logout">Déconnexion</button>
+    </div>
   </header>
 </template>
 
 <script>
 export default {
-  props: {
-    firstName: {
-      type: String,
-      required: true,
+  // props: {
+  //   firstName: {
+  //     type: String,
+  //     required: true,
+  //   },
+  // },
+  computed: {
+    isLoggedIn() {
+      return !!localStorage.getItem('token');
+    },
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem('token');
+      this.$router.push('/login');
     },
   },
 };
@@ -44,11 +58,11 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #f0f0f0; /* Couleur de fond de l'en-tête */
+  background-color: #f0f0f0; 
 }
 
 .logo img {
-  width: 60px; /* Ajustez la taille du logo */
+  width: 60px; 
   height: auto;
 }
 
@@ -58,7 +72,7 @@ header {
 
 .icons {
   display: flex;
-  flex-direction: row-reverse; /* Aligne les icônes à droite */
+  flex-direction: row-reverse; 
 }
 
 .notifications button,
@@ -68,6 +82,6 @@ header {
   border: none;
   cursor: pointer;
   font-size: 20px;
-  margin-left: 10px; /* Ajustez l'espacement entre les icônes */
+  margin-left: 10px; 
 }
 </style>
