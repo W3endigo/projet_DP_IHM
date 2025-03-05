@@ -78,20 +78,32 @@ export default {
           
 
           // Rediriger vers page accueil
-          this.$router.push("/profil"); //changer pour home
+          this.$router.push("/create-project"); //changer pour home
         } else {
+          // Si aucune entreprise n'est sélectionnée, définir company à null
+          const company = this.form.company || null;
+
           //trouver solution pour company null
           await axios.post("http://localhost:8082/api/auth/register", {
             lastName: this.form.lastName,
             firstName: this.form.firstName,
-            company: this.form.company,
+            company: company,
             email: this.form.email,
             password: this.form.password,
           });
 
+          // Connexion automatique après inscription
+          const loginResponse = await axios.put("http://localhost:8082/api/auth/login", {
+            email: this.form.email,
+            password: this.form.password,
+          });
+
+          // Stocker le JWT dans localStorage
+          localStorage.setItem("token", loginResponse.data.token);
+
           // Rediriger vers /home
           this.$emit("login-success", this.form.firstName); 
-          this.$router.push("/profil"); //changer pour home
+          this.$router.push("/create-project"); //changer pour home
         }
       } catch (error) {
         this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";

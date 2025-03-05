@@ -1,43 +1,35 @@
 <template>
   <header>
-    <div class="logo">
-      <img src="@/assets/logo.png" alt="Logo">
+    <div class="logo" @click="goToHome">
+        <img src="@/assets/logo.png" alt="Logo">
     </div>
-    <!-- probleme de récup du firstName -->
-    <!-- <div class="user-info">
-      <span>Bonjour {{ firstName }}</span>
-    </div> -->
-    <div class="icons">
-      <div class="notifications">
-        <button>
-          <i class="fas fa-bell"></i>
-        </button>
+    <div class="right-section">
+      <div class="icons">
+        <div class="notifications">
+          <button>
+            <i class="fas fa-bell"></i>
+          </button>
+        </div>
+        <div class="messages">
+          <button>
+            <i class="fas fa-envelope"></i>
+          </button>
+        </div>
+        <div class="profile">
+          <button @click="goToProfile">
+            <i class="fas fa-user-circle"></i>
+          </button>
+        </div>
       </div>
-      <div class="messages">
-        <button>
-          <i class="fas fa-envelope"></i>
-        </button>
+      <div class="deconnexion">
+        <button v-if="isLoggedIn" @click="logout">Déconnexion</button>
       </div>
-      <div class="profile">
-        <button>
-          <i class="fas fa-user-circle"></i>
-        </button>
-      </div>
-    </div>
-    <div class="deconnexion">
-      <button v-if="isLoggedIn" @click="logout">Déconnexion</button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  // props: {
-  //   firstName: {
-  //     type: String,
-  //     required: true,
-  //   },
-  // },
   computed: {
     isLoggedIn() {
       return !!localStorage.getItem('token');
@@ -48,6 +40,12 @@ export default {
       localStorage.removeItem('token');
       this.$router.push('/login');
     },
+    goToProfile() {
+      this.$router.push('/profil');
+    },
+    goToHome() {
+      this.$router.push('/home');
+    },
   },
 };
 </script>
@@ -57,22 +55,28 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 5px 10px;
+  margin: 10px;
   background-color: #f0f0f0; 
 }
 
 .logo img {
-  width: 60px; 
+  width: 70px; 
   height: auto;
 }
 
-.user-info {
-  font-weight: bold;
+.logo:hover {
+  cursor: pointer;
+}
+
+.right-section {
+  display: flex;
+  align-items: center;
 }
 
 .icons {
   display: flex;
-  flex-direction: row-reverse; 
+  align-items: center;
 }
 
 .notifications button,
@@ -83,5 +87,19 @@ header {
   cursor: pointer;
   font-size: 20px;
   margin-left: 10px; 
+}
+
+.deconnexion button {
+  background: none;
+  border-radius: 5px;
+  border: 2px solid #000000;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.deconnexion button:hover {
+  background-color: #7fa6bc; /* Bleu clair au survol */
 }
 </style>

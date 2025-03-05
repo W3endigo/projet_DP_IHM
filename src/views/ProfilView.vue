@@ -4,24 +4,24 @@
     <div v-if="user">
       <div class="profile-field">
         <label>Nom:</label>
-        <input type="text" :value="user.lastName" readonly />
+        <input type="text" v-model="user.lastName" />
       </div>
       <div class="profile-field">
         <label>Prénom:</label>
-        <input type="text" :value="user.firstName" readonly />
+        <input type="text" v-model="user.firstName" />
       </div>
-      <!-- <div class="profile-field">
-        <label>Email:</label>
-        <input type="text" :value="user.email" readonly class="non-modifiable" />
-      </div> -->
       <div class="profile-field">
         <label>Entreprise:</label>
-        <input type="text" :value="user.company || 'pas encore indiqué'" readonly />
+        <select v-model="user.company">
+          <option value="">Sélectionnez une entreprise</option>
+          <option v-for="company in companies" :key="company.id" :value="company.name">{{ company.name }}</option>
+        </select>
       </div>
       <div class="profile-field">
         <label>Mot de passe:</label>
-        <input type="text" :value="user.password || 'pas encore indiqué'" readonly />
+        <input type="password" v-model="user.password" placeholder="Modifier votre mot de passe" />
       </div>
+      <button @click="updateUser">Enregistrer les modifications</button>
     </div>
     <div v-else>
       <p>Chargement des informations du profil...</p>
@@ -34,11 +34,14 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8082/api/user';
+const USER_API_URL = 'http://localhost:8082/api/user';
+const COMPANIES_API_URL = 'http://localhost:8082/api/companies';
 
 export default {
   setup() {
     const user = ref(null);
+    const originalUser = ref(null); // Pour stocker les valeurs initiales
+    const companies = ref([]);
     const error = ref(null);
     const token = ref(localStorage.getItem('token') || "");
 
@@ -50,22 +53,66 @@ export default {
       }
 
       try {
-        const response = await axios.get(API_URL, {
+        const response = await axios.get(USER_API_URL, {
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
         });
 
         user.value = response.data;
+        console.log("value user", user.value)
+        originalUser.value = { ...response.data };
+        console.log("valeur origine", originalUser.value)
       } catch (err) {
         error.value = err.response ? err.response.data : err.message;
         console.error("Erreur lors de la récupération du profil :", error.value);
       }
     };
 
-    onMounted(getUser);
+    const getCompanies = async () => {
+      try {
+        const response = await axios.get(COMPANIES_API_URL);
+        companies.value = response.data;
+      } catch (err) {
+        console.error("Erreur lors de la récupération des compagnies :", err);
+      }
+    };
 
-    return { user, error };
+    const updateUser = async () => {
+      const updatedFields = {};
+
+      // Comparer les valeurs actuelles avec les valeurs initiales
+      for (const key in user.value) {
+        if (user.value[key] !== originalUser.value[key]) {
+          updatedFields[key] = user.value[key];
+        }
+      }
+
+      if (Object.keys(updatedFields).length === 0) {
+        alert("Aucune modification détectée.");
+        return;
+      }
+
+      try {
+        await axios.put(USER_API_URL, updatedFields, {
+          headers: {
+            Authorization: `Bearer ${token.value}`,
+          },
+        });
+        alert("Modifications enregistrées avec succès !");
+        originalUser.value = { ...user.value }; // Mettre à jour les valeurs initiales
+      } catch (err) {
+        error.value = err.response ? err.response.data : err.message;
+        console.error("Erreur lors de la mise à jour du profil :", error.value);
+      }
+    };
+
+    onMounted(() => {
+      getUser();
+      getCompanies();
+    });
+
+    return { user, companies, error, updateUser };
   },
 };
 </script>
@@ -91,15 +138,33 @@ export default {
 }
 
 .profile-field input {
-  width: 96%;
+  width: 95%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   background: #f9f9f9;
 }
 
-.non-modifiable {
-  color: gray;
+.profile-field select {
+  width: 98.5%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+button {
+  padding: 10px 20px;
+  background: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9;
 }
 
 .error-message {

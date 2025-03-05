@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginView from '../views/LoginView.vue';
 import HomeView from '../views/HomeView.vue';
 import ProfilView from '../views/ProfilView.vue';
+import CreateProjectView from '../views/CreateProjectView.vue';
+import DashboardView from '../views/DashboardView.vue';
 
 const routes = [
     {
@@ -10,7 +12,7 @@ const routes = [
       component: LoginView,
     },
     {
-      path: '/',
+      path: '/home',
       name: 'Home',
       component: HomeView,
       meta: { requiresAuth: true },
@@ -20,6 +22,16 @@ const routes = [
       name: 'Profil',
       component: ProfilView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/create-project',
+      name: 'CreateProject',
+      component: CreateProjectView,
+    },
+    {
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: DashboardView,
     },
   ];
 
