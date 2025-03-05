@@ -63,7 +63,7 @@ export default {
       try {
         if (this.isLogin) {
           // Connexion (PUT /api/auth/login)
-          const response = await axios.put("http://api_projet:8082/api/auth/login", {
+          const response = await axios.put("http://localhost:8082/api/auth/login", {
             email: this.form.email,
             password: this.form.password,
           });
@@ -84,7 +84,7 @@ export default {
           const company = this.form.company || null;
 
           //trouver solution pour company null
-          await axios.post("http://api_projet:8082/api/auth/register", {
+          await axios.post("http://localhost:8082/api/auth/register", {
             lastName: this.form.lastName,
             firstName: this.form.firstName,
             company: company,
@@ -93,7 +93,7 @@ export default {
           });
 
           // Connexion automatique après inscription
-          const loginResponse = await axios.put("http://api_projet:8082/api/auth/login", {
+          const loginResponse = await axios.put("http://localhost:8082/api/auth/login", {
             email: this.form.email,
             password: this.form.password,
           });
@@ -110,7 +110,7 @@ export default {
       }
     },async fetchCompanies() {
       try {
-        const response = await axios.get("http://api_projet:8082/api/companies");
+        const response = await axios.get("http://localhost:8082/api/companies");
         this.companies = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des compagnies :", error);

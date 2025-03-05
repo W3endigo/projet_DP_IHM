@@ -34,8 +34,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
-const USER_API_URL = 'http://api_projet:8082/api/user';
-const COMPANIES_API_URL = 'http://api_projet:8082/api/companies';
+const USER_API_URL = 'http://localhost:8082/api/user';
+const COMPANIES_API_URL = 'http://localhost:8082/api/companies';
 
 export default {
   setup() {

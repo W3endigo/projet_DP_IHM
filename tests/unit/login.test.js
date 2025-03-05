@@ -42,7 +42,7 @@ describe("LoginView.vue", () => {
 
     await wrapper.find("form").trigger("submit.prevent");
 
-    expect(axios.put).toHaveBeenCalledWith("http://api_projet:8082/api/auth/login", {
+    expect(axios.put).toHaveBeenCalledWith("http://localhost:8082/api/auth/login", {
       email: "test@example.com",
       password: "password123",
     });
