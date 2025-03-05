@@ -1,11 +1,11 @@
 describe('Test du Profil Utilisateur', () => {
   beforeEach(() => {
-    cy.intercept('GET', 'http://localhost:8082/api/user', {
+    cy.intercept('GET', 'http://api_projet:8082/api/user', {
       statusCode: 200,
       body: { firstName: 'John', lastName: 'Doe', company: 'TechCorp', password: '' }
     }).as('getUser'); // Définir l'interception AVANT cy.visit()
 
-    cy.intercept('GET', 'http://localhost:8082/api/companies', {
+    cy.intercept('GET', 'http://api_projet:8082/api/companies', {
       statusCode: 200,
       body: [{ id: 1, name: 'TechCorp' }, { id: 2, name: 'BizInc' }]
     });

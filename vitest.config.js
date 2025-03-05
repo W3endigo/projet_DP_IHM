@@ -10,7 +10,10 @@ export default defineConfig({
     }
   },
   test: {
-    globals: true,
-    environment: 'jsdom',
-  }
+    coverage: {
+      reporter: ['text', 'html'], // Generate text and HTML reports
+      include: ['src/**/*.vue'], // Include files to test
+      exclude: ['node_modules/', 'tests/'], // Exclude certain directories
+    },
+  },
 });

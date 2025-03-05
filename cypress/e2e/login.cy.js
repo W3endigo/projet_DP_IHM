@@ -22,7 +22,7 @@ describe("Login Page", () => {
   });
 
   it("Se connecte avec des identifiants valides", () => {
-    cy.intercept("PUT", "http://localhost:8082/api/auth/login", {
+    cy.intercept("PUT", "http://api_projet:8082/api/auth/login", {
       statusCode: 200,
       body: { token: "fake-jwt-token" },
     });
@@ -35,7 +35,7 @@ describe("Login Page", () => {
   });
 
   it("Affiche un message d'erreur avec des identifiants invalides", () => {
-    cy.intercept("PUT", "http://localhost:8082/api/auth/login", {
+    cy.intercept("PUT", "http://api_projet:8082/api/auth/login", {
       statusCode: 401,
       body: { message: "Identifiants invalides" },
     });

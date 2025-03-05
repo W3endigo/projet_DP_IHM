@@ -85,7 +85,7 @@ export default {
         }
 
         console.log("avant put", this.form);
-        await axios.put("http://localhost:8082/api/project", this.form, {
+        await axios.put("http://api_projet:8082/api/project", this.form, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -108,7 +108,7 @@ export default {
     },
     async fetchCompanies() {
       try {
-        const response = await axios.get("http://localhost:8082/api/companies");
+        const response = await axios.get("http://api_projet:8082/api/companies");
         this.companies = response.data;
       } catch (error) {
         console.error("Erreur lors de la récupération des compagnies :", error);

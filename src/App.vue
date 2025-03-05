@@ -32,7 +32,7 @@ export default {
       if (token) {
         try {
           console.log('Token du App:', token);
-          const response = await axios.get('http://localhost:8082/api/user', {
+          const response = await axios.get('http://api_projet:8082/api/user', {
             headers: {
               Authorization: `Bearer ${token}`,
             },

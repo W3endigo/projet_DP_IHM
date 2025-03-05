@@ -16,14 +16,14 @@ describe('ProfilView.vue', () => {
   });
 
   it('renders the profile page', async () => {
-    mock.onGet('http://localhost:8082/api/user').reply(200, {
+    mock.onGet('http://api_projet:8082/api/user').reply(200, {
       lastName: 'Doe',
       firstName: 'John',
       company: 'Company A',
       password: 'password123',
     });
 
-    mock.onGet('http://localhost:8082/api/companies').reply(200, [
+    mock.onGet('http://api_projet:8082/api/companies').reply(200, [
       { id: 1, name: 'Company A' },
       { id: 2, name: 'Company B' },
     ]);
@@ -42,14 +42,14 @@ describe('ProfilView.vue', () => {
   });
 
   it('updates user profile', async () => {
-    mock.onGet('http://localhost:8082/api/user').reply(200, {
+    mock.onGet('http://api_projet:8082/api/user').reply(200, {
       lastName: 'Doe',
       firstName: 'John',
       company: 'Company A',
       password: 'password123',
     });
 
-    mock.onPut('http://localhost:8082/api/user').reply(200, {
+    mock.onPut('http://api_projet:8082/api/user').reply(200, {
       lastName: 'Smith',
       firstName: 'John',
       company: 'Company B',
