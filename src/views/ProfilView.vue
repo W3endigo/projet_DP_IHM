@@ -127,6 +127,10 @@ export default {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+h1 {
+  text-align: center; /* Centrer le texte de la balise h1 */
+}
+
 .profile-field {
   margin-bottom: 20px;
 }
@@ -153,8 +157,11 @@ export default {
   background: #f9f9f9;
 }
 
+
+
 button {
-  padding: 10px 20px;
+  width: 100%;
+  padding: 10px;
   background: #3498db;
   color: white;
   border: none;
