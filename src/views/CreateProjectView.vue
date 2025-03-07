@@ -1,17 +1,17 @@
 <template>
   <div class="create-project-container">
-    <h1>Créer un projet</h1>
+    <h1>Créer un nouveau projet</h1>
     <form @submit.prevent="handleSubmit">
       <div class="form-field">
         <label for="email_chef_project">Email du chef de projet:</label>
         <input type="email" id="email_chef_project" v-model="form.email_chef_project" required />
       </div>
       <div class="form-field">
-        <label for="title">Titre:</label>
+        <label for="title">Titre du projet:</label>
         <input type="text" id="title" v-model="form.title" required />
       </div>
       <div class="form-field">
-        <label for="description">Description:</label>
+        <label for="description">Description du projet:</label>
         <textarea id="description" v-model="form.description" required></textarea>
       </div>
       <div class="form-field">
@@ -31,7 +31,7 @@
         <input type="date" id="end_date" v-model="form.end_date" required />
       </div>
       <div class="form-field">
-        <label for="participants">Participants (emails):</label>
+        <label for="participants">Ajout de participant(s) (emails):</label>
         <div class="input-group">
           <input type="text" id="participants" v-model="newParticipant" placeholder="Ajouter un participant" />
           <button type="button" @click="addParticipant"><i class="fas fa-plus"></i></button>
@@ -43,7 +43,7 @@
         </ul>
       </div>
        <div class="form-field">
-        <label for="companies">Compagnie:</label>
+        <label for="companies">Entreprise:</label>
         <select id="companies" v-model="form.company" required>
           <option value="">Sélectionnez une entreprise</option>
           <option v-for="company in companies" :key="company.id" :value="company.name">{{ company.name }}</option>
@@ -90,9 +90,10 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log("après put", this.form);
         this.$router.push("/dashboard"); // Rediriger vers la liste des projets après la création
       } catch (error) {
-        console.log("y a un soucy");
+        console.log("y a un soucy", error);
         this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";
       }
     },
@@ -129,6 +130,10 @@ export default {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center; /* Centrer le texte de la balise h1 */
 }
 
 .form-field {
