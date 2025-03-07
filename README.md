@@ -38,7 +38,7 @@ Ce projet est une application de gestion de projets développée avec Vue.js.
 
 1. Clonez le dépôt
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/W3endigo/projet_DP_IHM
 cd projet_DP_IHM
 ```
 
