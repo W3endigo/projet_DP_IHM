@@ -4,7 +4,7 @@ describe('App.vue E2E', () => {
     });
   
     it('redirige vers login si non authentifié', () => {
-      cy.visit('/');
+      cy.visit('/home');
       cy.url().should('include', '/login');
     });
   
@@ -30,7 +30,7 @@ describe('App.vue E2E', () => {
         statusCode: 401,
       }).as('getUser');
   
-      cy.visit('/');
+      cy.visit('/home');
       cy.wait('@getUser');
   
       cy.url().should('include', '/login');

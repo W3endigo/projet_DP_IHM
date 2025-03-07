@@ -90,9 +90,10 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log("après put", this.form);
         this.$router.push("/dashboard"); // Rediriger vers la liste des projets après la création
       } catch (error) {
-        console.log("y a un soucy");
+        console.log("y a un soucy", error);
         this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";
       }
     },

@@ -21,6 +21,10 @@
         <label>Mot de passe:</label>
         <input type="password" v-model="user.password" placeholder="Modifier votre mot de passe" />
       </div>
+      <div class="profile-field">
+        <label>Confirmer le mot de passe:</label>
+        <input type="password" v-model="confirmPassword" placeholder="Confirmer le mot de passe" />
+      </div>
       <button @click="updateUser">Enregistrer les modifications</button>
     </div>
     <div v-else>
@@ -41,6 +45,7 @@ export default {
   setup() {
     const user = ref(null);
     const originalUser = ref(null); // Pour stocker les valeurs initiales
+    const confirmPassword = ref(""); // Pour stocker la confirmation du mot de passe
     const companies = ref([]);
     const error = ref(null);
     const token = ref(localStorage.getItem('token') || "");
@@ -79,6 +84,16 @@ export default {
     };
 
     const updateUser = async () => {
+      if (user.value.password && user.value.password.length < 8) {
+        alert("Le mot de passe doit contenir au minimum 8 caractères.");
+        return;
+      }
+
+      if (user.value.password && user.value.password !== confirmPassword.value) {
+        alert("Les mots de passe ne correspondent pas.");
+        return;
+      }
+
       const updatedFields = {};
 
       // Comparer les valeurs actuelles avec les valeurs initiales
@@ -112,7 +127,7 @@ export default {
       getCompanies();
     });
 
-    return { user, companies, error, updateUser };
+    return { user, confirmPassword, companies, error, updateUser };
   },
 };
 </script>

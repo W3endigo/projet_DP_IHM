@@ -78,7 +78,7 @@ export default {
           
 
           // Rediriger vers page accueil
-          this.$router.push("/create-project"); //changer pour home
+          this.$router.push("/home"); 
         } else {
           // Si aucune entreprise n'est sélectionnée, définir company à null
           const company = this.form.company || null;
@@ -103,7 +103,7 @@ export default {
 
           // Rediriger vers /home
           this.$emit("login-success", this.form.firstName); 
-          this.$router.push("/create-project"); //changer pour home
+          this.$router.push("/home");
         }
       } catch (error) {
         this.errorMessage = error.response?.data?.message || "Une erreur est survenue.";

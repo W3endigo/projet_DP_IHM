@@ -67,8 +67,8 @@
           </button>
           <div v-if="showMenu" class="dropdown-menu">
             <button @click="navigateTo('/home')">Accueil</button>
+            <button @click="navigateTo('/dashboard')">Mes projets</button>
             <button @click="navigateTo('/create-project')">Nouveau project</button>
-            <button @click="navigateTo('/dashboard')">Tableau de bord</button>
             <button @click="navigateTo('/profil')">Profil</button>
           </div>
         </div>
@@ -106,7 +106,7 @@ export default {
       this.$router.push('/profil');
     },
     goToHome() {
-      this.$router.push('/home');
+      this.$router.push('home/');
     },
     toggleMenu() {
       this.showMenu = !this.showMenu;
@@ -178,13 +178,20 @@ header {
 
 .notifications button,
 .messages button,
-.profile button,
-.menu button {
+.profile button {
   background: none;
   border: none;
   cursor: pointer;
   font-size: 20px;
   margin-left: 10px; 
+}
+
+.menu button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 0px; 
 }
 
 .deconnexion button {
